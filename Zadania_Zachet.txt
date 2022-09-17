@@ -1,0 +1,87 @@
+;; Задание 1
+
+(defmacro MyCond (states default-state)
+  `(if ,(null states) ,default-state (if ,(first (car states)) ,(second (car states)) (MyCond ,(cdr states) default-state))))
+
+
+(MyCond ((T (print 'first)) (T (print 'second))) (print 'default))
+
+;; Задание 2
+
+(defmacro MyWhen (condition &rest body)
+  `(if ,condition (progn ,@body) nil))
+
+(print (MyWhen T (setf x 1) (setf y (+ x 10)) y))
+
+;; Задание 3
+
+(defun setsops (f A B)
+    (funcall f A B))
+
+
+(defun tekyschii (x L)
+  (cond
+    ((null L) nil)
+    (t (cons (list x (car L)) (tekyschii x (cdr L))))))
+
+
+(defun DeakrtovoProizv (A B)
+  (cond
+    ((null A) nil)
+    (t (append (funcall 'tekyschii (car A) B) (DeakrtovoProizv (cdr A) B)))))
+
+
+(print (setsops 'DeakrtovoProizv '(a b) '(1 2 3)))
+
+;; Задание 4
+
+(defun dobavitVKagdii (x L)
+  (cond
+    ((null L) nil)
+    (t (cons (list x (car L)) (dobavitVKagdii x (cdr L))))))
+
+(defun tekysch_combinaciya (L)
+  (cond
+    ((null L) nil)
+    (t (dobavitVKagdii (car L) (cdr L)))))
+
+(defun combinacii (L)
+  (cond
+    ((null L) nil)
+    (t (mapcon 'tekysch_combinaciya L))))
+
+
+(print (combinacii '(a b c d)))
+
+
+;; Задание 5
+
+
+(defun cicl_Sdvig_Vlevo (L)
+  (append (cdr L) (list (car L))))
+
+(defun dobavitVKagdii (x L)
+  (cond
+    ((null L) nil)
+    (t (cons (cons x (car L)) (dobavitVKagdii x (cdr L))))))
+
+
+(defun tekusch_perestanovka (x L)
+  (cond
+    ((null (third L)) (list (cons x L) (cons x (reverse L))))
+    (t (dobavitVKagdii x (Perm L)))))
+
+
+(defun iterPerm (L i)
+  (cond
+    ((= i 0) nil)
+    (t (append (tekusch_perestanovka (first L) (cdr L)) (iterPerm (cicl_Sdvig_Vlevo L) (- i 1))))))
+
+(defun Perm (L)
+  (cond
+    ((null (second L)) L)
+    ((null (third L))  (list (list (first L) (second L)) (list (second L) (first L))))
+    (t (iterPerm L (list-length L)))))
+
+
+(print (Perm '(a b c d)))
